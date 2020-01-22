@@ -26,6 +26,15 @@ public class TicketService {
 
         try {
 
+            if(ticketRequest.getCustomer_email().equals("")){
+                ticketRequest.setCustomer_email("kristjan.grm1@gmail.com");
+            }
+            if(ticketRequest.getCustomer_name().equals("")){
+                ticketRequest.setCustomer_name("Anonymous");
+            }
+            if(ticketRequest.getDescription().equals("Anonymous")){
+                ticketRequest.setDescription("Anonymous");
+            }
             // TODO: shrani numbers v bazo oziroma celoten ticketRequest
             OpenNodeCreateCharge createCharge = OpenNodeCreateCharge.builder().orderId("internal id")
                     .description(ticketRequest.getDescription()).amount(TICKET_AMOUNT)
