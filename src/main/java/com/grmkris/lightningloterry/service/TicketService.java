@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class TicketService {
 
-    private static Long TICKET_AMOUNT = 200L;
+    private static Double TICKET_AMOUNT = 200.00;
 
     OpenNodeService service = OpenNodeServiceFactory.buildClient("b95d29ac-4ce9-45c9-ab9e-8767b35a01de");
 
@@ -56,11 +56,18 @@ public class TicketService {
     public List<TicketResponse> getAllTickets() {
         List<TicketResponse> ticketResponses = new ArrayList<TicketResponse>();
 
-        OpenNodeResponse<List<OpenNodeCharge>> charges = service.listCharges().execute().body();
-        for (OpenNodeCharge charge : charges.getData()) {
+        OpenNodeResponse<List<OpenNodeCharge>> charges;
+        try {
+            charges = service.listCharges().execute().body();
+            for (OpenNodeCharge charge : charges.getData()) {
 
-            System.out.println(charge.getDescription() + " - " + charge.getAmount() + " - " + charge.getStatus());
+                System.out.println(charge.getDescription() + " - " + charge.getAmount() + " - " + charge.getStatus());
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
+
         
         return ticketResponses;
     }
