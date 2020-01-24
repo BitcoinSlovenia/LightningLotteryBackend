@@ -20,14 +20,13 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "Winners")
-public class Winners implements Serializable {
+public class Winners {
 
-    //@EmbeddedId private WinnersID id;
-    @Id
+    @EmbeddedId private WinnersID id;
+
     @ManyToOne @MapsId("raffleID")
     private Raffle raffle;
 
-    @Id
     @OneToOne @MapsId("ticketID")
     private Tickets ticket;
 
