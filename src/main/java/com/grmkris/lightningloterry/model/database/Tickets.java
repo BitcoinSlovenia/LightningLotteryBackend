@@ -1,5 +1,7 @@
 package com.grmkris.lightningloterry.model.database;
 
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,16 +15,16 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "tickets")
+@Table(name = "Tickets")
 public class Tickets {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long TicketID;
+    private Long ticketID;
 
     @ManyToOne
-    @JoinColumn(name="RAFFLE_ID")
-    private Raffle RaffleID;
+    @JoinColumn(name="raffleID", nullable=false)
+    private Raffle raffle;
     
     private String openNodeID;
     private String customerName;
@@ -33,5 +35,8 @@ public class Tickets {
     private String amount;
     private Double fiatValue;
     private String lnPaymentRequest;
+
+    @OneToMany(mappedBy="ticket")
+    private Set<Winners> winner;
     
 }

@@ -45,16 +45,16 @@ logging:
 spring:
   profiles: development
   datasource:
-    url: jdbc:mariadb://localhost:3306/lightningLottery
-    username: lightningLottery
-    password: lightningLottery
+    url: jdbc:mariadb://localhost:3306/lightninglottery
+    username: lightninglottery
+    password: lightninglottery
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create-drop
   flyway:
-    enabled: true
-    baselineOnMigrate: true
+    enabled: false
+    baselineOnMigrate: false
 server:
   port: 8080
   servlet:

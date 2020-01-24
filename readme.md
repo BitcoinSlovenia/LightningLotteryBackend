@@ -36,3 +36,13 @@ en delujoč lightning payment
 
 ## URL
 http://localhost:8080/swagger-ui.html#
+
+
+### Flyway  
+Database is versioned using flyway.  
+**Useful links:**  
+- https://rieckpil.de/howto-best-practices-for-flyway-and-hibernate-with-spring-boot/ 
+- https://www.callicoder.com/spring-boot-flyway-database-migration-example/
+#### Settings
+This will validate jpa models with database that flyway creates
+`spring.jpa.hibernate.ddl-auto=validate`

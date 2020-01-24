@@ -26,12 +26,9 @@ public class Raffle{
     private Timestamp endDate;
     private String winningNumbers;
 
-    @OneToMany(mappedBy = "raffle", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "raffle")
     private Set<Tickets> tickets;
 
-    public Raffle(Timestamp startDate, Timestamp endDate, String winningNumbers,  Tickets... ticket){
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.winningNumbers = winningNumbers;
-    }
+    @OneToMany(mappedBy="raffle")
+    private Set<Winners> winner;
 }

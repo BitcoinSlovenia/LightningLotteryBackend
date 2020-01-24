@@ -1,0 +1,35 @@
+
+CREATE TABLE `Raffle` (
+  `raffleID` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'raffleID, each raffle has its own ID. ID is referenced in ticket',
+  `startDate` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'DateTime when raffle started',
+  `endDate` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'DateTime when raffle ended',
+  `winningNumbers` text NOT NULL COMMENT 'Winning numbers in Text form. Each number is split by ","',
+  PRIMARY KEY (`raffleID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table for Raffles in Lightning Lottery'
+CREATE TABLE `Tickets` (
+  `TicketID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `RaffleID` bigint(20) NOT NULL COMMENT 'in which raffle this ticket is used',
+  `openNodeID` bigint(20) NOT NULL COMMENT 'OpenNodeID of generated invoice',
+  `customerName` varchar(100) DEFAULT NULL,
+  `customerEmail` varchar(100) DEFAULT NULL,
+  `customerDescription` varchar(300) DEFAULT NULL,
+  `numbers` varchar(100) DEFAULT NULL COMMENT 'Selected numbers as string split by ","',
+  `status` varchar(100) DEFAULT NULL COMMENT 'PAID, PROCESSING; FAILED',
+  `amount` decimal(10,0) DEFAULT NULL,
+  `fiatValue` decimal(10,0) DEFAULT NULL,
+  `lnPaymentRequest` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`TicketID`),
+  KEY `Tickets_FK` (`RaffleID`),
+  CONSTRAINT `Tickets_FK` FOREIGN KEY (`RaffleID`) REFERENCES `Raffle` (`raffleID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+CREATE TABLE `Winners` (
+  `raffleID` bigint(20) NOT NULL,
+  `ticketID` bigint(20) NOT NULL,
+  `prizeWon` decimal(10,0) NOT NULL COMMENT 'v satoshijih',
+  `prizeType` varchar(100) NOT NULL COMMENT 'sedmica, šestica, petica itd...',
+  `status` varchar(100) NOT NULL COMMENT 'CLAIMED / UNCLAIMED -> ko user claima reward, se mu status tukaj spremeni v CLAIMED',
+  KEY `Winners_FK` (`raffleID`),
+  KEY `Winners_FK_1` (`ticketID`),
+  CONSTRAINT `Winners_FK` FOREIGN KEY (`raffleID`) REFERENCES `Raffle` (`raffleID`),
+  CONSTRAINT `Winners_FK_1` FOREIGN KEY (`ticketID`) REFERENCES `Tickets` (`TicketID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
