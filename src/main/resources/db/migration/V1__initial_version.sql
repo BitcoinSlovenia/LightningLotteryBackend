@@ -1,4 +1,4 @@
-CREATE TABLE lightninglottery.Raffle (
+CREATE TABLE lightninglottery.raffle (
 	raffleID BIGINT auto_increment NOT NULL COMMENT 'raffleID, each raffle has its own ID. ID is referenced in ticket',
 	startDate TIMESTAMP NOT NULL COMMENT 'DateTime when raffle started',
 	endDate TIMESTAMP NOT NULL COMMENT 'DateTime when raffle ended',
@@ -7,7 +7,7 @@ CREATE TABLE lightninglottery.Raffle (
 )COMMENT='Table for Raffles in Lightning Lottery';
 
 
-CREATE TABLE lightninglottery.Tickets (
+CREATE TABLE lightninglottery.tickets (
 	TicketID BIGINT auto_increment NOT NULL,
 	RaffleID BIGINT NOT NULL COMMENT 'in which raffle this ticket is used',
 	openNodeID varchar(100) NOT NULL COMMENT 'OpenNodeID of generated invoice',
@@ -23,7 +23,7 @@ CREATE TABLE lightninglottery.Tickets (
 	CONSTRAINT Tickets_FK FOREIGN KEY (RaffleID) REFERENCES lightninglottery.Raffle(raffleID) ON DELETE RESTRICT ON UPDATE RESTRICT
 )COMMENT='Table for Tickets in Lightning Lottery, every request ticket request counts as a ticket and gets saved here';
 
-CREATE TABLE lightninglottery.Winners (
+CREATE TABLE lightninglottery.winners (
 	raffleID BIGINT NOT NULL,
 	ticketID BIGINT NOT NULL,
 	prizeWon DECIMAL NOT NULL COMMENT 'v satoshijih',

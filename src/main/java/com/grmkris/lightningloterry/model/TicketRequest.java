@@ -7,11 +7,11 @@ import lombok.Data;
 @Data
 public class TicketRequest{
 
-    String customer_name; // name of customer, or custom text
-    String customer_email; //
+    String customerName; // name of customer, or custom text
+    String customerEmail; //
     String description;
     Integer[] numbers;
-    String callback_url;
-    String success_url;
+    String callbackUrl;
+    String successUrl;
 
 }

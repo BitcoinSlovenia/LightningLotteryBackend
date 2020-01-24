@@ -6,31 +6,43 @@ import java.util.List;
 
 import com.grmkris.lightningloterry.model.TicketRequest;
 import com.grmkris.lightningloterry.model.TicketResponse;
+import com.grmkris.lightningloterry.model.database.Raffle;
+import com.grmkris.lightningloterry.model.database.Tickets;
+import com.grmkris.lightningloterry.repository.RaffleRepository;
+import com.grmkris.lightningloterry.repository.TicketRepository;
 
 import org.brunocvcunha.opennode.api.OpenNodeService;
 import org.brunocvcunha.opennode.api.OpenNodeServiceFactory;
 import org.brunocvcunha.opennode.api.model.OpenNodeCharge;
 import org.brunocvcunha.opennode.api.model.OpenNodeCreateCharge;
-import org.brunocvcunha.opennode.api.model.OpenNodeCurrency;
 import org.brunocvcunha.opennode.api.model.OpenNodeResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class TicketService {
 
     private static Double TICKET_AMOUNT = 200.00;
 
     OpenNodeService service = OpenNodeServiceFactory.buildClient("b95d29ac-4ce9-45c9-ab9e-8767b35a01de");
 
+    @Autowired
+    private TicketRepository ticketRepository;
+
+    @Autowired RaffleRepository raffleRepository;
+
     public TicketResponse newTicket(TicketRequest ticketRequest) {
 
         try {
 
-            if(ticketRequest.getCustomer_email().equals("")){
-                ticketRequest.setCustomer_email("kristjan.grm1@gmail.com");
+            if(ticketRequest.getCustomerEmail().equals("")){
+                ticketRequest.setCustomerEmail("kristjan.grm1@gmail.com");
             }
-            if(ticketRequest.getCustomer_name().equals("")){
-                ticketRequest.setCustomer_name("Anonymous");
+            if(ticketRequest.getCustomerName().equals("")){
+                ticketRequest.setCustomerName("Anonymous");
             }
             if(ticketRequest.getDescription().equals("Anonymous")){
                 ticketRequest.setDescription("Anonymous");
@@ -38,19 +50,40 @@ public class TicketService {
             // TODO: shrani numbers v bazo oziroma celoten ticketRequest
             OpenNodeCreateCharge createCharge = OpenNodeCreateCharge.builder().orderId("internal id")
                     .description(ticketRequest.getDescription()).amount(TICKET_AMOUNT)
-                    .callbackUrl(ticketRequest.getCallback_url()).customerEmail(ticketRequest.getCustomer_email())
-                    .customerName(ticketRequest.getCustomer_name())
+                    .callbackUrl(ticketRequest.getCallbackUrl()).customerEmail(ticketRequest.getCustomerEmail())
+                    .customerName(ticketRequest.getCustomerName())
                     // .currency(OpenNodeCurrency.EUR) // default is satoshis
                     .build();
 
             OpenNodeCharge createdCharge = service.createCharge(createCharge).execute().body().getData();
 
             TicketResponse ticketResponse = TicketResponse.builder().amount(TICKET_AMOUNT)
-                    .customer_email(ticketRequest.getCustomer_email()).customer_name(createdCharge.getName())
-                    .fiat_value(createdCharge.getFiatValue()).lightningInvoice(createdCharge.getLightningInvoice())
-                    .numbers(ticketRequest.getNumbers()).openNodeId(createdCharge.getId())
-                    .status(createdCharge.getStatus()).build();
+                    .customerEmail(ticketRequest.getCustomerEmail()).customerName(createdCharge.getName())
+                    .customerDescription(ticketRequest.getDescription())
+                    .fiatValue(createdCharge.getFiatValue()).lightningInvoice(createdCharge.getLightningInvoice().getPayreq())
+                    .numbers(ticketRequest.getNumbers()).openNodeID(createdCharge.getId())
+                    .settledAt(createdCharge.getLightningInvoice().getSettledAt())
+                    .status(createdCharge.getStatus().name()).build();
 
+            // Insert v bazo
+            Raffle raffle = raffleRepository.findLatestRaffle();
+
+            Tickets ticket = Tickets.builder()
+                .amount(ticketResponse.getAmount())
+                .customerDescription(createCharge.getDescription())
+                .customerEmail(ticketResponse.getCustomerEmail())
+                .customerName(ticketResponse.getCustomerName())
+                .fiatValue(ticketResponse.getFiatValue())
+                .lnPaymentRequest(ticketResponse.getLightningInvoice())
+                .numbers(ticketResponse.getNumbers())
+                .openNodeID(ticketResponse.getOpenNodeID())
+                .raffle(raffle)
+                .settledAt(ticketResponse.getSettledAt())
+                .status(ticketResponse.getStatus())
+                .ticketID(ticketResponse.getTicketID())
+                .build();
+
+            ticketRepository.save(ticket);
             return ticketResponse;
 
         } catch (IOException e) {
@@ -62,7 +95,7 @@ public class TicketService {
 
     }
 
-    public List<TicketResponse> getAllTickets() {
+    public List<TicketResponse> getAllTicketsOpenNode() {
         List<TicketResponse> ticketResponses = new ArrayList<TicketResponse>();
 
         OpenNodeResponse<List<OpenNodeCharge>> charges;
@@ -81,7 +114,11 @@ public class TicketService {
         return ticketResponses;
     }
 
-    public OpenNodeCharge getTicket(String ticketId) {
+    public List<Tickets> getAllTickets(){
+        return ticketRepository.findAll();
+    }
+
+    public OpenNodeCharge getTicketOpenNode(String ticketId) {
 
         OpenNodeCharge charge;
         try {
@@ -93,5 +130,9 @@ public class TicketService {
         }
         return null;
 
+    }
+
+    public Tickets getTicket(Long ticketID){
+        return ticketRepository.getOne(ticketID);
     }
 }

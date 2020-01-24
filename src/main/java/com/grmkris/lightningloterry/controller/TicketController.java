@@ -1,7 +1,12 @@
 package com.grmkris.lightningloterry.controller;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import com.grmkris.lightningloterry.model.TicketRequest;
 import com.grmkris.lightningloterry.model.TicketResponse;
+import com.grmkris.lightningloterry.model.database.Tickets;
 import com.grmkris.lightningloterry.service.TicketService;
 
 import org.brunocvcunha.opennode.api.model.OpenNodeCharge;
@@ -19,21 +24,52 @@ public class TicketController{
     @Autowired
     TicketService ticketservice;
 
+
     @RequestMapping(path = "/ticket", method = RequestMethod.POST)
     public TicketResponse ticket(@RequestBody TicketRequest ticketRequest) {
         return ticketservice.newTicket(ticketRequest);
     }
 
     @RequestMapping(path = "/ticket", method = RequestMethod.GET)
-    public OpenNodeCharge ticket(@RequestParam String ticketId) {
-        return ticketservice.getTicket(ticketId);
-        // TODO popravi da vrneš ticketResponse, povezi z bazo in shranjuj podatke
+    public TicketResponse ticket(@RequestParam Long ticketId) {
+        Tickets ticket =  ticketservice.getTicket(ticketId);
+        return TicketResponse.builder()
+            .amount(ticket.getAmount())
+            .customerEmail(ticket.getCustomerEmail())
+            .customerName(ticket.getCustomerName())
+            .fiatValue(ticket.getFiatValue())
+            .lightningInvoice(ticket.getLnPaymentRequest())
+            .settledAt(ticket.getSettledAt())
+            .numbers(ticket.getNumbers())
+            .openNodeID(ticket.getOpenNodeID())
+            .status(ticket.getStatus())
+            .ticketID(ticket.getTicketID())
+            .build();
     }
 
     @RequestMapping(path = "/tickets", method = RequestMethod.GET)
-    public TicketResponse[] tickets() {
-        TicketResponse[] ticketResponseArray = null;
-        return ticketResponseArray;
+    public List<TicketResponse> tickets() {
+        List<TicketResponse> ticketResponseList = new ArrayList<TicketResponse>();
+        List<Tickets> ticketList = ticketservice.getAllTickets();
+        Tickets ticket = null;
+        Iterator<Tickets> it = ticketList.iterator();
+        while(it.hasNext()){
+            ticket = it.next();
+            ticketResponseList.add(TicketResponse.builder()
+                .amount(ticket.getAmount())
+                .customerEmail(ticket.getCustomerEmail())
+                .customerName(ticket.getCustomerName())
+                .fiatValue(ticket.getFiatValue())
+                .lightningInvoice(ticket.getLnPaymentRequest())
+                .settledAt(ticket.getSettledAt())
+                .numbers(ticket.getNumbers())
+                .openNodeID(ticket.getOpenNodeID())
+                .status(ticket.getStatus())
+                .ticketID(ticket.getTicketID())
+                .build()
+            );
+        }
+        return ticketResponseList;
     }
 
 

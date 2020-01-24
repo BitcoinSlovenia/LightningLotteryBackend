@@ -1,5 +1,6 @@
 package com.grmkris.lightningloterry.model.database;
 
+import java.sql.Timestamp;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -11,10 +12,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Entity
 @Data
+@Builder
 @Table(name = "Tickets")
 public class Tickets {
 
@@ -30,11 +33,12 @@ public class Tickets {
     private String customerName;
     private String customerEmail;
     private String customerDescription;
-    private String numbers;
+    private Integer[] numbers;
     private String status;
-    private String amount;
+    private Double amount;
     private Double fiatValue;
     private String lnPaymentRequest;
+    private Long settledAt;
 
     @OneToMany(mappedBy="ticket")
     private Set<Winners> winner;

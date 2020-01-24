@@ -1,7 +1,6 @@
 package com.grmkris.lightningloterry.model;
 
-import org.brunocvcunha.opennode.api.model.OpenNodeChargeStatus;
-import org.brunocvcunha.opennode.api.model.OpenNodeLightningInvoice;
+import java.sql.Timestamp;
 
 import lombok.Builder;
 import lombok.Data;
@@ -10,15 +9,17 @@ import lombok.Data;
 @Builder
 public class TicketResponse {
 
-    String ticket_id; //naš interni id, order_id za openNode
-    String openNodeId; //openNode id
-    String customer_name; // name of customer, or custom text
-    String customer_email; //
+    Long ticketID; //naš interni id, order_id za openNode
+    String openNodeID; //openNode id
+    String customerName; // name of customer, or custom text
+    String customerEmail; //
+    String customerDescription; // description
     Integer[] numbers;
-    OpenNodeChargeStatus status; // unpaid, paid, processing, win, lose
+    String status; // unpaid, paid, processing, win, lose
     Double amount; //cena ticketa (200 satoshi)
-    Double fiat_value;
-    OpenNodeLightningInvoice lightningInvoice;
+    Double fiatValue;
+    String lightningInvoice;
+    Long settledAt;
 
 }
 
