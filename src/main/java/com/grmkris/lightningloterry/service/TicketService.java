@@ -83,7 +83,9 @@ public class TicketService {
                 .ticketID(ticketResponse.getTicketID())
                 .build();
 
-            ticketRepository.save(ticket);
+                ticket = ticketRepository.save(ticket);
+
+                ticketResponse.setTicketID(ticket.getTicketID());
             return ticketResponse;
 
         } catch (IOException e) {

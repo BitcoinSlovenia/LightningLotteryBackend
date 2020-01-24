@@ -16,8 +16,9 @@ public class RaffleController{
     LotteryService lotteryService;
 
     @RequestMapping(path = "/raffle", method = RequestMethod.POST)
-    public Raffle ticket() {
-        return lotteryService.newRaffle();
+    public Raffle raffle() {
+        Raffle raffle = lotteryService.newRaffle();
+        return raffle;
     }
 
 }
