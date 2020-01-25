@@ -14,7 +14,7 @@ public class TicketResponse {
     String customerName; // name of customer, or custom text
     String customerEmail; //
     String customerDescription; // description
-    Integer[] numbers;
+    String numbers;
     String status; // unpaid, paid, processing, win, lose
     Double amount; //cena ticketa (200 satoshi)
     Double fiatValue;

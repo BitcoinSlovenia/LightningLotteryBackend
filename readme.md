@@ -1,3 +1,8 @@
+
+# URL
+- http://localhost:8080/lightningLottery/swagger-ui.html
+
+
 test new ticket
 ```
 {

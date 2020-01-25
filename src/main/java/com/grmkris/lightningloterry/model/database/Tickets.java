@@ -12,13 +12,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Entity
-@Data
+@Entity 
 @Builder
-@Table(name = "Tickets")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class Tickets {
 
     @Id
@@ -33,7 +36,7 @@ public class Tickets {
     private String customerName;
     private String customerEmail;
     private String customerDescription;
-    private Integer[] numbers;
+    private String numbers;
     private String status;
     private Double amount;
     private Double fiatValue;

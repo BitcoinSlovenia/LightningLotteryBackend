@@ -92,6 +92,8 @@ public class TicketService {
             // TODO Auto-generated catch block
             // API excpetion poglej proper exception handling
             e.printStackTrace();
+        } catch (NullPointerException e){
+            e.printStackTrace();
         }
         return null;
 
@@ -135,6 +137,7 @@ public class TicketService {
     }
 
     public Tickets getTicket(Long ticketID){
-        return ticketRepository.getOne(ticketID);
+        Tickets ticket = ticketRepository.getOne(ticketID);
+        return ticket;
     }
 }
