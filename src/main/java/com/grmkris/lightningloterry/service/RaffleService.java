@@ -1,31 +1,24 @@
 package com.grmkris.lightningloterry.service;
 
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
-import javax.transaction.Transactional;
+import java.sql.Timestamp;
 
 import com.grmkris.lightningloterry.exception.RaffleNotFoundException;
 import com.grmkris.lightningloterry.model.database.Raffle;
-import com.grmkris.lightningloterry.model.database.Winners;
 import com.grmkris.lightningloterry.repository.RaffleRepository;
-import com.grmkris.lightningloterry.repository.WinnersRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-@Transactional
-public class LotteryService {
+public class RaffleService{
 
     @Autowired
     private RaffleRepository raffleRepository;
 
-    @Autowired
-    private WinnersRepository winnersRepository;
-
+    
     public Raffle newRaffle() {
         // First we stop currently running raffle
         stopCurrentRaffle();
@@ -37,33 +30,19 @@ public class LotteryService {
         return raffle;
     }
 
-    public List<Winners> findWinner(Long raffleID) {
+    public Raffle getRaffle(Long raffleID){
         Optional<Raffle> raffleOpt = raffleRepository.findById(raffleID);
-        if (raffleOpt.isPresent()){
-            Raffle raffle = raffleOpt.get();
-            if (raffle.getEndDate() == null){
-                //raffle has not yet ended
-                return null;
-                //throw new RaffleStillRunningException(Raffle);
-            }
-            else{
-                return winnersRepository.findByRaffle(raffle);
-            }
-        }
-        else{
+        if(raffleOpt.isPresent()){
+            return raffleOpt.get();
+        }else{
+            //TODO
             return null;
             //throw new RaffleNotFoundException();
         }
     }
 
-    private void generateRandomNumber(){
-
-    }
-
-    private void findAllEligibleTickets(){
-        // morajo biti v časovnem obdobju -> od prejšnega zrebanja pa do -30minut do trenutnega zreba
-        // status morajo imeti PAID -> to pomeni da so plačali lightning ticket
-        //
+    public List<Raffle> getRaffles(){
+        return raffleRepository.findAll();
     }
 
     private void stopCurrentRaffle(){
@@ -76,7 +55,5 @@ public class LotteryService {
             currentRaffle.setWinningNumbers("12345"); //replace with winningNumber
             raffleRepository.save(currentRaffle);
         }
-
     }
-
 }
