@@ -9,9 +9,7 @@ import com.grmkris.lightningloterry.model.TicketResponse;
 import com.grmkris.lightningloterry.model.database.Tickets;
 import com.grmkris.lightningloterry.service.TicketService;
 
-import org.brunocvcunha.opennode.api.model.OpenNodeCharge;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,20 +29,26 @@ public class TicketController{
     }
 
     @RequestMapping(path = "/ticket", method = RequestMethod.GET)
-    public TicketResponse ticket(@RequestParam Long ticketId) {
-        Tickets ticket =  ticketservice.getTicket(ticketId);
-        return TicketResponse.builder()
-            .amount(ticket.getAmount())
-            .customerEmail(ticket.getCustomerEmail())
-            .customerName(ticket.getCustomerName())
-            .fiatValue(ticket.getFiatValue())
-            .lightningInvoice(ticket.getLnPaymentRequest())
-            .settledAt(ticket.getSettledAt())
-            .numbers(ticket.getNumbers())
-            .openNodeID(ticket.getOpenNodeID())
-            .status(ticket.getStatus())
-            .ticketID(ticket.getTicketID())
-            .build();
+    public TicketResponse ticket(@RequestParam Long ticketId, @RequestParam Boolean refresh) {
+        if(refresh == false){
+            Tickets ticket =  ticketservice.getTicket(ticketId);
+            return TicketResponse.builder()
+                .amount(ticket.getAmount())
+                .customerEmail(ticket.getCustomerEmail())
+                .customerName(ticket.getCustomerName())
+                .fiatValue(ticket.getFiatValue())
+                .lightningInvoice(ticket.getLnPaymentRequest())
+                .settledAt(ticket.getSettledAt())
+                .numbers(ticket.getNumbers())
+                .openNodeID(ticket.getOpenNodeID())
+                .status(ticket.getStatus())
+                .ticketID(ticket.getTicketID())
+                .build();
+        }
+        else{
+            return ticketservice.getTicketOpenNode(ticketId);
+        }
+
     }
 
     @RequestMapping(path = "/tickets", method = RequestMethod.GET)

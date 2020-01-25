@@ -2,7 +2,6 @@ package com.grmkris.lightningloterry.controller;
 
 import com.grmkris.lightningloterry.model.database.Raffle;
 import com.grmkris.lightningloterry.service.LotteryService;
-import com.grmkris.lightningloterry.service.TicketService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

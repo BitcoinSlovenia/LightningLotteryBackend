@@ -1,7 +1,5 @@
 package com.grmkris.lightningloterry.model;
 
-import java.sql.Timestamp;
-
 import lombok.Builder;
 import lombok.Data;
 

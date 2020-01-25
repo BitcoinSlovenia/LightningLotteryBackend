@@ -17,7 +17,6 @@ import org.brunocvcunha.opennode.api.model.OpenNodeCharge;
 import org.brunocvcunha.opennode.api.model.OpenNodeCreateCharge;
 import org.brunocvcunha.opennode.api.model.OpenNodeResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -122,12 +121,34 @@ public class TicketService {
         return ticketRepository.findAll();
     }
 
-    public OpenNodeCharge getTicketOpenNode(String ticketId) {
+    public TicketResponse getTicketOpenNode(Long ticketId) {
+
+        Tickets ticket = ticketRepository.getOne(ticketId);
 
         OpenNodeCharge charge;
         try {
-            charge = service.getCharge(ticketId).execute().body().getData();
-            return charge;
+
+            charge = service.getCharge(ticket.getOpenNodeID()).execute().body().getData();
+            TicketResponse ticketResponse = TicketResponse.builder()
+            .amount(charge.getAmount())
+            .customerDescription(ticket.getCustomerDescription())
+            .customerEmail(ticket.getCustomerEmail())
+            .customerName(ticket.getCustomerName())
+            .fiatValue(ticket.getFiatValue())
+            .lightningInvoice(ticket.getLnPaymentRequest())
+            .numbers(ticket.getNumbers())
+            .ticketID(ticket.getTicketID())
+            .settledAt(charge.getLightningInvoice().getSettledAt())
+            .status(charge.getStatus().name())
+            .build();
+
+            //if charge.status and ticket.status differ that means that change in payment occured. (user either paid or didn't pay)
+            if(!ticketResponse.getStatus().equals(charge.getStatus().name())){
+                ticket.setStatus(charge.getStatus().name());
+                ticket.setSettledAt(charge.getLightningInvoice().getSettledAt());
+                ticketRepository.save(ticket);
+            }
+
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
