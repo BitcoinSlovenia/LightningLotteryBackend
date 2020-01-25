@@ -20,5 +20,14 @@ public class RaffleController{
         Raffle raffle = lotteryService.newRaffle();
         return raffle;
     }
+    
+    /**
+     * 
+     * @return String 5-ih števil 0-9, ki ga generira funkcija GenerateRandomNumber
+     */
+    @RequestMapping(path = "/random", method = RequestMethod.POST)
+    public String random() {
+        return lotteryService.GenerateRandomNumber();
+    }
 
 }
