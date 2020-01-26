@@ -29,5 +29,5 @@ public class Winners {
 
     private Double prizeWon;
     private String prizeType;
-    private String status;
+    private WinnersStatus status;
 }

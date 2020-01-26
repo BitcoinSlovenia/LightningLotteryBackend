@@ -8,6 +8,7 @@ import com.grmkris.lightningloterry.model.database.Raffle;
 import com.grmkris.lightningloterry.model.database.RaffleStatus;
 import com.grmkris.lightningloterry.model.database.Tickets;
 import com.grmkris.lightningloterry.model.database.Winners;
+import com.grmkris.lightningloterry.model.database.WinnersStatus;
 import com.grmkris.lightningloterry.repository.RaffleRepository;
 import com.grmkris.lightningloterry.repository.TicketRepository;
 import com.grmkris.lightningloterry.repository.WinnersRepository;
@@ -24,60 +25,50 @@ public class WinnersService {
     @Autowired
     private WinnersRepository winnersRepository;
 
-    @Autowired 
+    @Autowired
     private TicketRepository ticketRespository;
 
     public List<Winners> getWinners(Long raffleID) {
         Optional<Raffle> raffleOpt = raffleRepository.findById(raffleID);
-        if (raffleOpt.isPresent()){
+        List<Winners> winnersList = new ArrayList<Winners>();
+        if (raffleOpt.isPresent()) {
             Raffle raffle = raffleOpt.get();
-            if(raffle.getStatus().equals(RaffleStatus.COMPLETED)){
-
+            if (raffle.getStatus().equals(RaffleStatus.COMPLETED)) { // completed winners allready in database
+                winnersList = this.winnersRepository.findByRaffle(raffle);
             }
-            if (raffle.getEndDate() == null){
-                //raffle has not yet ended
+            if (raffle.getStatus().equals(RaffleStatus.FINISHED)) { // winners not yet in database, find them by hand
+                winnersList = this.findWinner(raffle);
+            }
+            if (raffle.getStatus().equals(RaffleStatus.RUNNING)) {
+                // raffle has not yet ended throw new RaffleStillRunningException(Raffle);
                 return null;
-                //throw new RaffleStillRunningException(Raffle);
-            }
-            else{
-                return winnersRepository.findByRaffle(raffle);
-            }
-        }
-        else{
+            } 
+            if (raffle.getStatus().equals(RaffleStatus.STOPPED)) {
+                // raffle has been stopped for some reason // throw new RaffleStoppedSException(Raffle);
+                return null;
+            } 
+        } else {
             return null;
-            //throw new RaffleNotFoundException();
+            // throw new RaffleNotFoundException();
         }
+        return winnersList;
     }
 
-    public List<Winners> findWinner() {
-        Raffle raffle = raffleRepository.findCompletedRaffle();
+    public List<Winners> findWinner(Raffle raffle) {
+        List<Tickets> ticketList = ticketRespository.findByRaffle(raffle);
         List<Winners> winnersList = new ArrayList<Winners>();
-        if (raffle == null){
-            // TODO
-            // return RaffleNotFoundException 
-            return null;
-        }
-        else{
-            List<Tickets> ticketList = ticketRespository.findByRaffle(raffle);
-            Tickets ticket;
-            for(int i = 0; i < ticketList.size(); i++){
-                ticket = ticketList.get(i);
-                if (ticket.getNumbers().equals(raffle.getWinningNumbers())){
-                    Winners winner = Winners.builder()
-                        .prizeType("5")
-                        .prizeWon(Double.parseDouble(String.valueOf(ticketList.size()*180)))
-                        .raffle(raffle)
-                        .status("PENDING")
-                        .ticket(ticket)
-                        .build();
-                    winnersRepository.save(winner);
-                    winnersList.add(winner);
-                }
+        Tickets ticket;
+        for (int i = 0; i < ticketList.size(); i++) {
+            ticket = ticketList.get(i);
+            if (ticket.getNumbers().equals(raffle.getWinningNumbers())) {
+                Winners winner = Winners.builder().prizeType("5")
+                        .prizeWon(Double.parseDouble(String.valueOf(ticketList.size() * 180))).raffle(raffle)
+                        .status(WinnersStatus.PENDING).ticket(ticket).build();
+                winnersRepository.save(winner);
+                winnersList.add(winner);
             }
-
         }
-
-        return null;
+        return winnersList;
     }
 
 }
