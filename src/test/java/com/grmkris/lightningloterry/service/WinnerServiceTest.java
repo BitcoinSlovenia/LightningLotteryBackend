@@ -1,15 +1,11 @@
 package com.grmkris.lightningloterry.service;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
-import com.grmkris.lightningloterry.model.TicketRequest;
 import com.grmkris.lightningloterry.model.database.Raffle;
 import com.grmkris.lightningloterry.model.database.RaffleStatus;
 import com.grmkris.lightningloterry.model.database.Tickets;
@@ -103,7 +99,7 @@ public class WinnerServiceTest {
     }
 
     @Test
-    public void findPastWinnerTest_winnerList() {
+    public void findPastWinnerStatusFinishedTest_winnerListStatusCompleted() {
         List<Winners> winners = this.winnerService.getWinners(this.RAFFLEID);
         assertEquals(winners.size(), 2);
     }

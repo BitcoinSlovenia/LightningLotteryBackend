@@ -12,6 +12,4 @@ import org.springframework.stereotype.Repository;
 public interface TicketRepository extends JpaRepository<Tickets, Long>{
 
     List<Tickets> findByRaffle(Raffle raffle);
-
-    List<Tickets> findByWinningNumbers(String number);
 }

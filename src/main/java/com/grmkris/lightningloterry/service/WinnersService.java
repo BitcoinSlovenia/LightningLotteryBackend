@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import com.grmkris.lightningloterry.model.database.Raffle;
 import com.grmkris.lightningloterry.model.database.RaffleStatus;
 import com.grmkris.lightningloterry.model.database.Tickets;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 public class WinnersService {
 
     @Autowired
@@ -38,6 +41,8 @@ public class WinnersService {
             }
             if (raffle.getStatus().equals(RaffleStatus.FINISHED)) { // winners not yet in database, find them by hand
                 winnersList = this.findWinner(raffle);
+                raffle.setStatus(RaffleStatus.COMPLETED);
+                raffleRepository.save(raffle);
             }
             if (raffle.getStatus().equals(RaffleStatus.RUNNING)) {
                 // raffle has not yet ended throw new RaffleStillRunningException(Raffle);
