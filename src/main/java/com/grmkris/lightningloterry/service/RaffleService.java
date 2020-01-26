@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import com.grmkris.lightningloterry.model.database.Raffle;
+import com.grmkris.lightningloterry.model.database.RaffleStatus;
 import com.grmkris.lightningloterry.repository.RaffleRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class RaffleService{
         Date date = new Date();
         long time = date.getTime();
         Timestamp ts = new Timestamp(time);
-        Raffle raffle = Raffle.builder().endDate(null).startDate(ts).tickets(null).build();
+        Raffle raffle = Raffle.builder().endDate(null).startDate(ts).tickets(null).status(RaffleStatus.RUNNING).build();
         raffleRepository.save(raffle);
         return raffle;
     }
@@ -53,6 +54,7 @@ public class RaffleService{
             Timestamp ts = new Timestamp(time);
             currentRaffle.setEndDate(ts);
             currentRaffle.setWinningNumbers(generateRandomNumber()); 
+            currentRaffle.setStatus(RaffleStatus.FINISHED);
             raffleRepository.save(currentRaffle);
             return currentRaffle;
         }

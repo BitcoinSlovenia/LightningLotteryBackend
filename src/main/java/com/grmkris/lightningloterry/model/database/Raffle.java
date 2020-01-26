@@ -29,6 +29,7 @@ public class Raffle{
     private Timestamp startDate;
     private Timestamp endDate;
     private String winningNumbers;
+    private RaffleStatus status;
 
     @OneToMany(mappedBy = "raffle")
     private Set<Tickets> tickets;

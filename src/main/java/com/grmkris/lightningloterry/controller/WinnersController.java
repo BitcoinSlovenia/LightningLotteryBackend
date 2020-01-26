@@ -18,14 +18,9 @@ public class WinnersController{
     WinnersService winnersService;
 
     @RequestMapping(path = "/lottery/{raffleID}", method = RequestMethod.GET)
-    public List<Winners> lottery(@PathVariable(value = "raffleID") Long raffleID) {
-        List<Winners> winnersList = this.winnersService.findPastWinner(raffleID);
+    public List<Winners> winners(@PathVariable(value = "raffleID") Long raffleID) {
+        List<Winners> winnersList = this.winnersService.getWinners(raffleID);
         return winnersList;
     }
-
-    @RequestMapping(path = "/lottery", method = RequestMethod.POST)
-    public List<Winners> lotteryWinners() {
-        List<Winners> winnersList = this.winnersService.findWinner();
-        return winnersList;
-    }
+    
 }

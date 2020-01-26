@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.grmkris.lightningloterry.model.database.Raffle;
+import com.grmkris.lightningloterry.model.database.RaffleStatus;
 import com.grmkris.lightningloterry.model.database.Tickets;
 import com.grmkris.lightningloterry.model.database.Winners;
 import com.grmkris.lightningloterry.repository.RaffleRepository;
@@ -26,10 +27,13 @@ public class WinnersService {
     @Autowired 
     private TicketRepository ticketRespository;
 
-    public List<Winners> findPastWinner(Long raffleID) {
+    public List<Winners> getWinners(Long raffleID) {
         Optional<Raffle> raffleOpt = raffleRepository.findById(raffleID);
         if (raffleOpt.isPresent()){
             Raffle raffle = raffleOpt.get();
+            if(raffle.getStatus().equals(RaffleStatus.COMPLETED)){
+
+            }
             if (raffle.getEndDate() == null){
                 //raffle has not yet ended
                 return null;
