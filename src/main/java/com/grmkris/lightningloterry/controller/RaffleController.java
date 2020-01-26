@@ -3,7 +3,6 @@ package com.grmkris.lightningloterry.controller;
 import java.util.List;
 
 import com.grmkris.lightningloterry.model.database.Raffle;
-import com.grmkris.lightningloterry.service.LotteryService;
 import com.grmkris.lightningloterry.service.RaffleService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +29,7 @@ public class RaffleController{
         return raffle;
     }
     
-    /**
-     * 
-     * @return String 5-ih števil 0-9, ki ga generira funkcija GenerateRandomNumber
-     */
-    @RequestMapping(path = "/random", method = RequestMethod.POST)
-    public String random() {
-        return lotteryService.GenerateRandomNumber();
-    }
+
 
     @RequestMapping(path = "/raffles", method = RequestMethod.GET)
     public List<Raffle> getRaffles(@PathVariable(value = "raffleID") Long raffleID) {

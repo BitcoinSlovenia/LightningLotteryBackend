@@ -2,8 +2,6 @@ package com.grmkris.lightningloterry.controller;
 
 import java.util.List;
 
-import javax.websocket.server.PathParam;
-
 import com.grmkris.lightningloterry.model.database.Winners;
 import com.grmkris.lightningloterry.service.LotteryService;
 
@@ -29,6 +27,15 @@ public class LotteryController{
     public List<Winners> lotteryWinners() {
         List<Winners> winnersList = this.lotteryService.findWinner();
         return winnersList;
+    }
+
+    /**
+     * 
+     * @return String 5-ih števil 0-9, ki ga generira funkcija GenerateRandomNumber
+     */
+    @RequestMapping(path = "/random", method = RequestMethod.POST)
+    public String random() {
+        return lotteryService.GenerateRandomNumber();
     }
 
 }

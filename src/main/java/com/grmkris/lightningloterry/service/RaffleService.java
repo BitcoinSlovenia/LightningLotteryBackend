@@ -1,11 +1,11 @@
 package com.grmkris.lightningloterry.service;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.sql.Timestamp;
+import java.util.Random;
 
-import com.grmkris.lightningloterry.exception.RaffleNotFoundException;
 import com.grmkris.lightningloterry.model.database.Raffle;
 import com.grmkris.lightningloterry.repository.RaffleRepository;
 
@@ -52,8 +52,24 @@ public class RaffleService{
             long time = date.getTime();
             Timestamp ts = new Timestamp(time);
             currentRaffle.setEndDate(ts);
-            currentRaffle.setWinningNumbers("12345"); //replace with winningNumber
+            currentRaffle.setWinningNumbers(generateRandomNumber()); //replace with winningNumber
             raffleRepository.save(currentRaffle);
         }
     }
+
+    /**
+     * naključno generira 5 števil z random
+     * <br>
+     * https://www.scala-lang.org/api/current/scala/util/Random.html
+     * @return String 5-ih števil 0-9
+     */
+    public String generateRandomNumber(){
+        String finalStr = "";
+        Random rnd = new Random();
+        for(int i = 0; i < 5; i++){
+            finalStr += rnd.nextInt(9);
+        }
+        return finalStr;
+    }
+
 }
