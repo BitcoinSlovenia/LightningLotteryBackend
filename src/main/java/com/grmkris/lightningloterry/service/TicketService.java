@@ -24,12 +24,13 @@ public class TicketService {
 
     private static Double TICKET_AMOUNT = 200.00;
 
-    OpenNodeService service = OpenNodeServiceFactory.buildClient("b95d29ac-4ce9-45c9-ab9e-8767b35a01de");
+    private OpenNodeService service = OpenNodeServiceFactory.buildClient("b95d29ac-4ce9-45c9-ab9e-8767b35a01de");
 
     @Autowired
     private TicketRepository ticketRepository;
 
-    @Autowired RaffleRepository raffleRepository;
+    @Autowired 
+    private RaffleRepository raffleRepository;
 
     public TicketResponse newTicket(TicketRequest ticketRequest) {
 

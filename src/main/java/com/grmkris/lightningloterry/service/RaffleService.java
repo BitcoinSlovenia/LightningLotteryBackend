@@ -21,7 +21,6 @@ public class RaffleService{
     
     public Raffle newRaffle() {
         // First we stop currently running raffle
-        stopCurrentRaffle();
         Date date = new Date();
         long time = date.getTime();
         Timestamp ts = new Timestamp(time);
@@ -45,25 +44,28 @@ public class RaffleService{
         return raffleRepository.findAll();
     }
 
-    private void stopCurrentRaffle(){
-        Raffle currentRaffle = raffleRepository.findRunningRaffle();
-        if ( currentRaffle != null ){
+    public Raffle stopRaffle(Long raffleID){
+        Optional<Raffle> currentRaffleOpt = raffleRepository.findById(raffleID);
+        if ( currentRaffleOpt.isPresent() ){
+            Raffle currentRaffle = currentRaffleOpt.get();
             Date date= new Date();
             long time = date.getTime();
             Timestamp ts = new Timestamp(time);
             currentRaffle.setEndDate(ts);
-            currentRaffle.setWinningNumbers(generateRandomNumber()); //replace with winningNumber
+            currentRaffle.setWinningNumbers(generateRandomNumber()); 
             raffleRepository.save(currentRaffle);
+            return currentRaffle;
         }
+        return null;
+        //TODO excpetion raffleAllreadyEndedException
     }
 
     /**
      * naključno generira 5 števil z random
      * <br>
-     * https://www.scala-lang.org/api/current/scala/util/Random.html
      * @return String 5-ih števil 0-9
      */
-    public String generateRandomNumber(){
+    private String generateRandomNumber(){
         String finalStr = "";
         Random rnd = new Random();
         for(int i = 0; i < 5; i++){
