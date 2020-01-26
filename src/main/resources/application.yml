@@ -7,7 +7,7 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: validate #create-drop
   flyway:
     enabled: true
     baselineOnMigrate: true
@@ -29,7 +29,7 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: validate #create-drop
   flyway:
     enabled: true
     baselineOnMigrate: true
@@ -51,7 +51,7 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create-drop #validate #create-drop #validate 
   flyway:
     enabled: false
     baselineOnMigrate: false

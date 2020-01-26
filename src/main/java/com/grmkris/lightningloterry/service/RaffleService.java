@@ -46,7 +46,7 @@ public class RaffleService{
     }
 
     private void stopCurrentRaffle(){
-        Raffle currentRaffle = raffleRepository.findLatestRaffle();
+        Raffle currentRaffle = raffleRepository.findRunningRaffle();
         if ( currentRaffle != null ){
             Date date= new Date();
             long time = date.getTime();

@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 public class TicketService {
 
     private static Double TICKET_AMOUNT = 200.00;
@@ -46,7 +45,6 @@ public class TicketService {
             if(ticketRequest.getDescription().equals("Anonymous")){
                 ticketRequest.setDescription("Anonymous");
             }
-            // TODO: shrani numbers v bazo oziroma celoten ticketRequest
             OpenNodeCreateCharge createCharge = OpenNodeCreateCharge.builder().orderId("internal id")
                     .description(ticketRequest.getDescription()).amount(TICKET_AMOUNT)
                     .callbackUrl(ticketRequest.getCallbackUrl()).customerEmail(ticketRequest.getCustomerEmail())
@@ -65,7 +63,7 @@ public class TicketService {
                     .status(createdCharge.getStatus().name()).build();
 
             // Insert v bazo
-            Raffle raffle = raffleRepository.findLatestRaffle();
+            Raffle raffle = raffleRepository.findRunningRaffle();
 
             Tickets ticket = Tickets.builder()
                 .amount(ticketResponse.getAmount())
@@ -148,6 +146,8 @@ public class TicketService {
                 ticket.setSettledAt(charge.getLightningInvoice().getSettledAt());
                 ticketRepository.save(ticket);
             }
+
+            return ticketResponse;
 
         } catch (IOException e) {
             // TODO Auto-generated catch block

@@ -25,6 +25,7 @@ public class Raffle{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long raffleID;
 
+    //poglej okoli @Version in hibernate
     private Timestamp startDate;
     private Timestamp endDate;
     private String winningNumbers;

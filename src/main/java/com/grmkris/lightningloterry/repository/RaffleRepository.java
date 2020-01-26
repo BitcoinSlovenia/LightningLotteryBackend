@@ -10,8 +10,14 @@ import org.springframework.stereotype.Repository;
 public interface RaffleRepository extends JpaRepository<Raffle, Long>{
 
     @Query(
-    value = "SELECT * FROM raffle r ORDER BY r.start_date DESC LIMIT 1",
-    nativeQuery = true)
-    Raffle findLatestRaffle();
+        value = "SELECT * FROM raffle r ORDER BY r.start_date DESC LIMIT 1",
+        nativeQuery = true)
+    Raffle findRunningRaffle();
+
+    @Query(
+        value = "SELECT * FROM raffle r WHERE r.start_date IS NOT NULL AND r.end_date IS NOT NULL and r.winning_numbers IS NOT NULL ORDER BY r.start_date DESC LIMIT 1",
+        nativeQuery = true)
+    Raffle findCompletedRaffle();
+    
 
 }

@@ -4,7 +4,10 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 
+import lombok.Data;
+
 @Embeddable
+@Data
 public class WinnersID implements Serializable {
     /**
      *

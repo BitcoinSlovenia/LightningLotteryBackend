@@ -30,9 +30,9 @@ public class TicketController{
     }
 
     @RequestMapping(path = "/tickets/{ticketID}", method = RequestMethod.GET)
-    public TicketResponse ticket(@PathVariable Long ticketId, @RequestParam Boolean refresh) {
+    public TicketResponse ticket(@PathVariable Long ticketID, @RequestParam Boolean refresh) {
         if(refresh == false){
-            Tickets ticket =  ticketservice.getTicket(ticketId);
+            Tickets ticket =  ticketservice.getTicket(ticketID);
             return TicketResponse.builder()
                 .amount(ticket.getAmount())
                 .customerEmail(ticket.getCustomerEmail())
@@ -47,7 +47,7 @@ public class TicketController{
                 .build();
         }
         else{
-            return ticketservice.getTicketOpenNode(ticketId);
+            return ticketservice.getTicketOpenNode(ticketID);
         }
 
     }

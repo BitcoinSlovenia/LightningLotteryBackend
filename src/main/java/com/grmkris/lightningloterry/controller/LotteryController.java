@@ -21,7 +21,13 @@ public class LotteryController{
 
     @RequestMapping(path = "/lottery/{raffleID}", method = RequestMethod.GET)
     public List<Winners> lottery(@PathVariable(value = "raffleID") Long raffleID) {
-        List<Winners> winnersList = this.lotteryService.findWinner(raffleID);
+        List<Winners> winnersList = this.lotteryService.findPastWinner(raffleID);
+        return winnersList;
+    }
+
+    @RequestMapping(path = "/lottery", method = RequestMethod.POST)
+    public List<Winners> lotteryWinners() {
+        List<Winners> winnersList = this.lotteryService.findWinner();
         return winnersList;
     }
 
