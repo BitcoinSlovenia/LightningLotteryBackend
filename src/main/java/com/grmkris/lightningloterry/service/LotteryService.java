@@ -20,6 +20,8 @@ import com.grmkris.lightningloterry.repository.WinnersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import scala.util.Random;
+
 @Service
 public class LotteryService {
 
@@ -82,8 +84,19 @@ public class LotteryService {
         return null;
     }
 
-    private void generateRandomNumber(){
-
+    /**
+     * naključno generira 5 števil z random
+     * <br>
+     * https://www.scala-lang.org/api/current/scala/util/Random.html
+     * @return String 5-ih števil 0-9
+     */
+    public String GenerateRandomNumber(){
+        String finalStr = "";
+        Random rnd = new Random();
+        for(int i = 0; i < 5; i++){
+            finalStr += rnd.nextInt(9);
+        }
+        return finalStr;
     }
 
     private void findAllEligibleTickets(){
