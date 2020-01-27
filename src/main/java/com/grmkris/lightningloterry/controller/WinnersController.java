@@ -17,7 +17,7 @@ public class WinnersController{
     @Autowired
     WinnersService winnersService;
 
-    @RequestMapping(path = "/lottery/{raffleID}", method = RequestMethod.GET)
+    @RequestMapping(path = "/winners/{raffleID}", method = RequestMethod.GET)
     public List<Winners> winners(@PathVariable(value = "raffleID") Long raffleID) {
         List<Winners> winnersList = this.winnersService.getWinners(raffleID);
         return winnersList;

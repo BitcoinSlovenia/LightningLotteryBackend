@@ -1,5 +1,7 @@
 package com.grmkris.lightningloterry.exception;
 
-public class ApiException{
-    
+public class ApiException extends Exception {
+    public ApiException(String errorMessage){
+        super(errorMessage);
+    }
 }

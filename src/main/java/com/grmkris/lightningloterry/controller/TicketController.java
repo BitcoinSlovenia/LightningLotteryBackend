@@ -24,12 +24,12 @@ public class TicketController{
     TicketService ticketservice;
 
 
-    @RequestMapping(path = "/tickets", method = RequestMethod.POST)
+    @RequestMapping(path = "/ticket", method = RequestMethod.POST)
     public TicketResponse ticket(@RequestBody TicketRequest ticketRequest) {
         return ticketservice.newTicket(ticketRequest);
     }
 
-    @RequestMapping(path = "/tickets/{ticketID}", method = RequestMethod.GET)
+    @RequestMapping(path = "/ticket/{ticketID}", method = RequestMethod.GET)
     public TicketResponse ticket(@PathVariable Long ticketID, @RequestParam Boolean refresh) {
         if(refresh == false){
             Tickets ticket =  ticketservice.getTicket(ticketID);

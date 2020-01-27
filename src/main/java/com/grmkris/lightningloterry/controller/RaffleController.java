@@ -17,19 +17,19 @@ public class RaffleController{
     @Autowired
     RaffleService raffleService;
 
-    @RequestMapping(path = "/raffles", method = RequestMethod.POST)
+    @RequestMapping(path = "/raffle", method = RequestMethod.POST)
     public Raffle newRaffle() {
         Raffle raffle = raffleService.newRaffle();
         return raffle;
     }
 
-    @RequestMapping(path = "/raffles/{raffleID}", method = RequestMethod.PUT)
+    @RequestMapping(path = "/raffle/{raffleID}", method = RequestMethod.PUT)
     public Raffle stopRaffle(@PathVariable(value = "raffleID") Long raffleID) {
         Raffle raffle = raffleService.stopRaffle(raffleID);
         return raffle;
     }
 
-    @RequestMapping(path = "/raffles/{raffleID}", method = RequestMethod.GET)
+    @RequestMapping(path = "/raffle/{raffleID}", method = RequestMethod.GET)
     public Raffle getRaffle(@PathVariable(value = "raffleID") Long raffleID) {
         Raffle raffle = raffleService.getRaffle(raffleID);
         return raffle;
@@ -37,7 +37,7 @@ public class RaffleController{
     
 
     @RequestMapping(path = "/raffles", method = RequestMethod.GET)
-    public List<Raffle> getRaffles(@PathVariable(value = "raffleID") Long raffleID) {
+    public List<Raffle> getRaffles() {
         List<Raffle> raffleList = raffleService.getRaffles();
         return raffleList;
     }
