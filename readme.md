@@ -51,3 +51,15 @@ Database is versioned using flyway.
 #### Settings
 This will validate jpa models with database that flyway creates
 `spring.jpa.hibernate.ddl-auto=validate`
+
+
+
+## BUILDING AND DOCKER IMAGE
+we unpack the fat jar and copy it into docker
+https://spring.io/guides/gs/spring-boot-docker/ (scroll to text: Also, to take advantage of the clean separation between dependencies and application resources in a Spring Boot fat jar file, we will use a slightly different implementation of the Dockerfile:)
+
+`mvn clean package`
+`mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)`
+
+### maven docker
+TODO Build a Docker Image with Maven https://spring.io/guides/gs/spring-boot-docker/ 
