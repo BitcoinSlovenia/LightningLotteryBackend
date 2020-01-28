@@ -1,26 +1,18 @@
 package com.grmkris.lightningloterry.service;
 
-import static org.junit.Assert.assertEquals;
-
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.List;
 
 import com.grmkris.lightningloterry.model.database.Raffle;
 import com.grmkris.lightningloterry.model.database.RaffleStatus;
 import com.grmkris.lightningloterry.model.database.Tickets;
-import com.grmkris.lightningloterry.model.database.Winners;
 import com.grmkris.lightningloterry.repository.RaffleRepository;
 import com.grmkris.lightningloterry.repository.TicketRepository;
 import com.grmkris.lightningloterry.repository.WinnersRepository;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
 
 //@RunWith(MockitoJUnitRunner.class)
 public class WinnerServiceTest {

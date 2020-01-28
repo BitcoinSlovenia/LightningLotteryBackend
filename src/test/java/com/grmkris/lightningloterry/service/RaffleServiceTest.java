@@ -156,7 +156,7 @@ public class RaffleServiceTest {
     @Test
     public void whenEndRaffleTest_RaffleNotFoundException() {
         Exception exception = assertThrows(RaffleNotFoundException.class, () -> {
-            Raffle raffle = raffleService.endRaffle(1L);
+            raffleService.endRaffle(1L);
         });
         String expectedMessage = "Raffle not found!";
         String actualMessage = exception.getMessage();
