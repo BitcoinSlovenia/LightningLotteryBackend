@@ -2,6 +2,9 @@ package com.grmkris.lightningloterry.controller;
 
 import java.util.List;
 
+import com.grmkris.lightningloterry.exception.RaffleEndedException;
+import com.grmkris.lightningloterry.exception.RaffleNotFoundException;
+import com.grmkris.lightningloterry.exception.raffleRunningException;
 import com.grmkris.lightningloterry.model.database.Raffle;
 import com.grmkris.lightningloterry.service.RaffleService;
 
@@ -12,20 +15,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class RaffleController{
+public class RaffleController {
 
     @Autowired
     RaffleService raffleService;
 
     @RequestMapping(path = "/raffle", method = RequestMethod.POST)
-    public Raffle newRaffle() {
+    public Raffle newRaffle() throws raffleRunningException {
         Raffle raffle = raffleService.newRaffle();
         return raffle;
     }
 
     @RequestMapping(path = "/raffle/{raffleID}", method = RequestMethod.PUT)
-    public Raffle stopRaffle(@PathVariable(value = "raffleID") Long raffleID) {
-        Raffle raffle = raffleService.stopRaffle(raffleID);
+    public Raffle endRaffle(@PathVariable(value = "raffleID") Long raffleID)
+            throws RaffleNotFoundException, RaffleEndedException {
+        Raffle raffle = raffleService.endRaffle(raffleID);
         return raffle;
     }
 

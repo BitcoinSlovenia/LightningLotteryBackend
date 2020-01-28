@@ -39,13 +39,13 @@ public class WinnersService {
             if (raffle.getStatus().equals(RaffleStatus.COMPLETED)) { // completed winners allready in database
                 winnersList = this.winnersRepository.findByRaffle(raffle);
             }
-            if (raffle.getStatus().equals(RaffleStatus.FINISHED)) { // winners not yet in database, find them by hand
+            if (raffle.getStatus().equals(RaffleStatus.ENDED)) { // winners not yet in database, find them by hand
                 winnersList = this.findWinner(raffle);
                 raffle.setStatus(RaffleStatus.COMPLETED);
                 raffleRepository.save(raffle);
             }
             if (raffle.getStatus().equals(RaffleStatus.RUNNING)) {
-                // raffle has not yet ended throw new RaffleStillRunningException(Raffle);
+                // raffle has not yet ended throw new RaffleRunningException(Raffle);
                 return null;
             } 
             if (raffle.getStatus().equals(RaffleStatus.STOPPED)) {

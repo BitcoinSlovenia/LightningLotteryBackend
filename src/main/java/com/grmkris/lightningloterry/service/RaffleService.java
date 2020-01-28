@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import com.grmkris.lightningloterry.exception.RaffleEndedException;
+import com.grmkris.lightningloterry.exception.RaffleNotFoundException;
+import com.grmkris.lightningloterry.exception.raffleRunningException;
 import com.grmkris.lightningloterry.model.database.Raffle;
 import com.grmkris.lightningloterry.model.database.RaffleStatus;
 import com.grmkris.lightningloterry.repository.RaffleRepository;
@@ -20,14 +23,22 @@ public class RaffleService{
     private RaffleRepository raffleRepository;
 
     
-    public Raffle newRaffle() {
-        // First we stop currently running raffle
-        Date date = new Date();
-        long time = date.getTime();
-        Timestamp ts = new Timestamp(time);
-        Raffle raffle = Raffle.builder().endDate(null).startDate(ts).tickets(null).status(RaffleStatus.RUNNING).build();
-        raffleRepository.save(raffle);
-        return raffle;
+    public Raffle newRaffle() throws raffleRunningException {
+        // TODO exception if raffleAlreadyRunning
+
+        Raffle raffleCheck = raffleRepository.findRunningRaffle();
+        if(raffleCheck == null ){
+            Date date = new Date();
+            long time = date.getTime();
+            Timestamp ts = new Timestamp(time);
+            Raffle raffle = Raffle.builder().endDate(null).startDate(ts).tickets(null).status(RaffleStatus.RUNNING).build();
+            raffleRepository.save(raffle);
+            return raffle;
+        }
+        else {
+            throw new raffleRunningException("Raffle is already running");
+        }
+        
     }
 
     public Raffle getRaffle(Long raffleID){
@@ -45,21 +56,28 @@ public class RaffleService{
         return raffleRepository.findAll();
     }
 
-    public Raffle stopRaffle(Long raffleID){
+    public Raffle endRaffle(Long raffleID) throws RaffleNotFoundException, RaffleEndedException {
         Optional<Raffle> currentRaffleOpt = raffleRepository.findById(raffleID);
         if ( currentRaffleOpt.isPresent() ){
             Raffle currentRaffle = currentRaffleOpt.get();
+
+            if(currentRaffle.getStatus() == RaffleStatus.COMPLETED || currentRaffle.getStatus() == RaffleStatus.STOPPED || currentRaffle.getStatus() == RaffleStatus.ENDED){
+                throw new RaffleEndedException("Raffle already ended");
+            }
             Date date= new Date();
             long time = date.getTime();
             Timestamp ts = new Timestamp(time);
             currentRaffle.setEndDate(ts);
             currentRaffle.setWinningNumbers(generateRandomNumber()); 
-            currentRaffle.setStatus(RaffleStatus.FINISHED);
+            currentRaffle.setStatus(RaffleStatus.ENDED);
             raffleRepository.save(currentRaffle);
             return currentRaffle;
         }
-        return null;
+        else{
+            throw new RaffleNotFoundException("Raffle not found");
+        }
         //TODO excpetion raffleAllreadyEndedException
+        //TODO raffle doesn't exist
     }
 
     /**

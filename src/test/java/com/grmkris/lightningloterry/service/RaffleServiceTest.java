@@ -6,15 +6,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
+import com.grmkris.lightningloterry.exception.RaffleEndedException;
 import com.grmkris.lightningloterry.exception.RaffleNotFoundException;
-import com.grmkris.lightningloterry.exception.RaffleStillRunningException;
+import com.grmkris.lightningloterry.exception.raffleRunningException;
 import com.grmkris.lightningloterry.model.database.Raffle;
+import com.grmkris.lightningloterry.model.database.RaffleStatus;
 import com.grmkris.lightningloterry.repository.RaffleRepository;
 
 import org.junit.Before;
@@ -40,99 +44,123 @@ public class RaffleServiceTest {
     }
 
     @Test
-    public void newRaffleTest_Raffle() {
+    public void getRaffles_RaffleList() {
+        // prepare
+        List<Raffle> raffleListExpected = new ArrayList<Raffle>();
+        List<Raffle> raffleListActual = new ArrayList<Raffle>();
+        Date date = new Date();
+        long time = date.getTime();
+        Timestamp ts = new Timestamp(time);
+
+        raffleListExpected
+                .add(Raffle.builder().endDate(ts).startDate(ts).status(RaffleStatus.COMPLETED).raffleID(1L).build());
+        raffleListExpected
+                .add(Raffle.builder().endDate(ts).startDate(ts).status(RaffleStatus.COMPLETED).raffleID(2L).build());
+        raffleListExpected
+                .add(Raffle.builder().endDate(ts).startDate(ts).status(RaffleStatus.COMPLETED).raffleID(3L).build());
+
+        when(raffleRepository.findAll()).thenReturn(raffleListExpected);
+
+        // test
+        raffleListActual = raffleService.getRaffles();
+
+        assertEquals(raffleListExpected.size(), raffleListActual.size());
+        verify(raffleRepository, times(1)).findAll();
+    }
+
+    @Test
+    public void newRaffleTest_Raffle() throws raffleRunningException {
+
         Raffle raffle = raffleService.newRaffle();
         verify(raffleRepository, times(1)).save(raffle);
     }
 
     @Test
-    public void stopRaffleTest_RaffleStopped() {
+    public void getRaffleByIdTest_Raffle() {
         // prepare
         Date date = new Date();
         long time = date.getTime();
         Timestamp ts = new Timestamp(time);
-        Raffle raffle = Raffle.builder().endDate(null).startDate(ts).tickets(null).build();
-        raffleRepository.save(raffle);
 
+        Raffle raffleExpected = Raffle.builder().endDate(ts).startDate(ts).status(RaffleStatus.RUNNING).raffleID(1L)
+                .build();
+        when(raffleRepository.findById(1L)).thenReturn(Optional.of(raffleExpected));
+
+        Raffle raffleActual = raffleService.getRaffle(1L);
+
+        assertEquals(raffleActual.getStartDate(), ts);
+        assertEquals(raffleActual.getEndDate(), ts);
+        assertEquals(raffleActual.getStatus(), RaffleStatus.RUNNING);
+
+    }
+
+    @Test
+    public void endRaffleTest_RaffleEnded() throws RaffleNotFoundException, RaffleEndedException {
+        // prepare
+        Date date = new Date();
+        long time = date.getTime();
+        Timestamp ts = new Timestamp(time);
+        Raffle raffleExpected = Raffle.builder().startDate(ts).raffleID(1L).status(RaffleStatus.RUNNING).build();
+
+
+        when(raffleRepository.findById(1L)).thenReturn(Optional.of(raffleExpected));
         // when
-        Raffle stoppedRaffle = raffleService.stopRaffle(raffle.getRaffleID());
+
+        Raffle endedRaffle = raffleService.endRaffle(raffleExpected.getRaffleID());
 
         // test
-        assertNotEquals(stoppedRaffle.getEndDate(), null);
-        assertEquals(stoppedRaffle.getStartDate(), raffle.getStartDate());
-        assertNotEquals(stoppedRaffle.getWinningNumbers(), null);
+        assertNotEquals(endedRaffle.getEndDate(), null);
+        assertEquals(endedRaffle.getStartDate(), ts);
+        assertEquals(endedRaffle.getStatus(), RaffleStatus.ENDED);
+
     }
 
     @Test
-    public void whenNewRaffleTest_RaffleAlreadyRunningException() {
-        Exception exception = assertThrows(RaffleStillRunningException.class, () -> {
-            // prepare
+    public void whenNewRaffleTest_RaffleRunningException() {
+        Exception exception = assertThrows(raffleRunningException.class, () -> {
+            Date date = new Date();
+            long time = date.getTime();
+            Timestamp ts = new Timestamp(time);
+            Raffle raffleExpected = Raffle.builder().startDate(ts).raffleID(1L).status(RaffleStatus.RUNNING).build();
+
+            when(raffleRepository.findRunningRaffle()).thenReturn(raffleExpected);
+
             raffleService.newRaffle();
-            // when
-            Raffle raffle = raffleService.newRaffle();
-
         });
 
-        String expectedMessage = "Raffle is already running!";
+        String expectedMessage = "Raffle is running!";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
 
     }
 
     @Test
-    public void whenFinishRaffleTest_RaffleAlreadyRunningException() {
-        Exception exception = assertThrows(RaffleStillRunningException.class, () -> {
+    public void whenEndRaffleTest_RaffleEndedException() {
+        Exception exception = assertThrows(RaffleEndedException.class, () -> {
             // prepare
-            Raffle raffle = raffleService.newRaffle();
-            Long raffleID = raffle.getRaffleID();
-            raffle = raffleService.stopRaffle(raffleID);
-            // when
-            raffleService.stopRaffle(raffleID);
+            Date date = new Date();
+            long time = date.getTime();
+            Timestamp ts = new Timestamp(time);
+            Raffle raffleExpected = Raffle.builder().startDate(ts).raffleID(1L).status(RaffleStatus.ENDED).build();
+
+            when(raffleRepository.findById(1L)).thenReturn(Optional.of(raffleExpected));
+
+            raffleService.endRaffle(1L);
+
         });
-        String expectedMessage = "Raffle has already finished!";
+        String expectedMessage = "Raffle ended!";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
-    public void whenFinishRaffleTest_RaffleNotFoundException() {
+    public void whenEndRaffleTest_RaffleNotFoundException() {
         Exception exception = assertThrows(RaffleNotFoundException.class, () -> {
-            // prepare
-            Raffle raffle = raffleService.newRaffle();
-            Long raffleID = raffle.getRaffleID();
-            
-            // when
-            raffle = raffleService.stopRaffle(12323232L);
+            Raffle raffle = raffleService.endRaffle(1L);
         });
         String expectedMessage = "Raffle not found!";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
-    }
-
-    @Test
-    public void whenGetRaffles_RaffleList() {
-        // prepare
-        List<Raffle> raffleListExpected = new ArrayList<Raffle>();
-        List<Raffle> raffleListActual = new ArrayList<Raffle>();
-
-        Raffle raffle1 = raffleService.newRaffle();
-        raffle1 = raffleService.stopRaffle(raffle1.getRaffleID());
-        raffleListExpected.add(raffle1);
-
-        Raffle raffle2 = raffleService.newRaffle();
-        raffle2 = raffleService.stopRaffle(raffle2.getRaffleID());
-        raffleListExpected.add(raffle2);
-
-        Raffle raffle3 = raffleService.newRaffle();
-        raffle3 = raffleService.stopRaffle(raffle3.getRaffleID());
-        raffleListExpected.add(raffle3);
-
-        raffleListActual = raffleService.getRaffles();
-
-        assertEquals(raffleListExpected, raffleListActual);
-
-        
-
     }
 
 }
