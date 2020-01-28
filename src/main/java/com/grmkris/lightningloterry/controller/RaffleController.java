@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.grmkris.lightningloterry.exception.RaffleEndedException;
 import com.grmkris.lightningloterry.exception.RaffleNotFoundException;
-import com.grmkris.lightningloterry.exception.raffleRunningException;
+import com.grmkris.lightningloterry.exception.RaffleRunningException;
 import com.grmkris.lightningloterry.model.database.Raffle;
 import com.grmkris.lightningloterry.service.RaffleService;
 
@@ -21,7 +21,7 @@ public class RaffleController {
     RaffleService raffleService;
 
     @RequestMapping(path = "/raffle", method = RequestMethod.POST)
-    public Raffle newRaffle() throws raffleRunningException {
+    public Raffle newRaffle() throws RaffleRunningException {
         Raffle raffle = raffleService.newRaffle();
         return raffle;
     }

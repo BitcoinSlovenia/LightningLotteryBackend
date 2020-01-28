@@ -1,7 +1,12 @@
 package com.grmkris.lightningloterry.exception;
 
 public class ApiException extends Exception {
-    public ApiException(String errorMessage){
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+
+    public ApiException(String errorMessage) {
         super(errorMessage);
     }
 }

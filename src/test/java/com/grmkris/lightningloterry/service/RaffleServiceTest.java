@@ -16,7 +16,7 @@ import java.util.Optional;
 
 import com.grmkris.lightningloterry.exception.RaffleEndedException;
 import com.grmkris.lightningloterry.exception.RaffleNotFoundException;
-import com.grmkris.lightningloterry.exception.raffleRunningException;
+import com.grmkris.lightningloterry.exception.RaffleRunningException;
 import com.grmkris.lightningloterry.model.database.Raffle;
 import com.grmkris.lightningloterry.model.database.RaffleStatus;
 import com.grmkris.lightningloterry.repository.RaffleRepository;
@@ -69,7 +69,7 @@ public class RaffleServiceTest {
     }
 
     @Test
-    public void newRaffleTest_Raffle() throws raffleRunningException {
+    public void newRaffleTest_Raffle() throws RaffleRunningException {
 
         Raffle raffle = raffleService.newRaffle();
         verify(raffleRepository, times(1)).save(raffle);
@@ -117,7 +117,7 @@ public class RaffleServiceTest {
 
     @Test
     public void whenNewRaffleTest_RaffleRunningException() {
-        Exception exception = assertThrows(raffleRunningException.class, () -> {
+        Exception exception = assertThrows(RaffleRunningException.class, () -> {
             Date date = new Date();
             long time = date.getTime();
             Timestamp ts = new Timestamp(time);

@@ -8,7 +8,7 @@ import java.util.Random;
 
 import com.grmkris.lightningloterry.exception.RaffleEndedException;
 import com.grmkris.lightningloterry.exception.RaffleNotFoundException;
-import com.grmkris.lightningloterry.exception.raffleRunningException;
+import com.grmkris.lightningloterry.exception.RaffleRunningException;
 import com.grmkris.lightningloterry.model.database.Raffle;
 import com.grmkris.lightningloterry.model.database.RaffleStatus;
 import com.grmkris.lightningloterry.repository.RaffleRepository;
@@ -23,7 +23,7 @@ public class RaffleService{
     private RaffleRepository raffleRepository;
 
     
-    public Raffle newRaffle() throws raffleRunningException {
+    public Raffle newRaffle() throws RaffleRunningException {
         // TODO exception if raffleAlreadyRunning
 
         Raffle raffleCheck = raffleRepository.findRunningRaffle();
@@ -36,7 +36,7 @@ public class RaffleService{
             return raffle;
         }
         else {
-            throw new raffleRunningException("Raffle is already running");
+            throw new RaffleRunningException("Raffle is already running");
         }
         
     }
