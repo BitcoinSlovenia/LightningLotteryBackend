@@ -1,5 +1,15 @@
 
-# URL
+# HOW TO RUN
+ - `cd docker`
+ - `docker-compose up`
+
+Occasionaly use `docker-compose pull` before running `docker-compose up` this makes sure that the latest image is always used
+
+## database
+- **database**: lightninglottery
+- **username**: lightninglottery
+- **password**: lightninglottery
+## WEB API (swagger) URL
 - http://localhost:8080/lightningLottery/swagger-ui.html
 
 
