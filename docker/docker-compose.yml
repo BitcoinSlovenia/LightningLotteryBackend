@@ -7,6 +7,7 @@ services:
 
   db:
     image: mariadb
+    container_name: db
     restart: always
     environment:
       MYSQL_DATABASE: 'lightninglottery'
@@ -21,3 +22,18 @@ services:
       - '3306:3306'
     volumes:
       - db_data:/var/lib/mysql
+
+  backendServer:
+    image: bitcoin-slovenia/lightning-loterry-backend
+    container_name: lightningLoterryBackend
+    depends_on:
+        - db
+    restart: always
+    environment:
+      - 'SPRING_PROFILES_ACTIVE=docker'
+      - 'SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/lightninglottery?useUnicode=true&characterEncoding=utf8&useSSL=false'
+      - 'SPRING_DATASOURCE_USERNAME=lightninglottery'
+      - 'SPRING_DATASOURCE_PASSWORD=lightninglottery'
+      - 'SPRING_FLYWAY_ENABLED=false'
+    ports:
+      - '8080:8080'
