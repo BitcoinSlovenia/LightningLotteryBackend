@@ -24,7 +24,7 @@ services:
       - db_data:/var/lib/mysql
 
   backendServer:
-    image: bitcoin-slovenia/lightning-loterry-backend
+    image: bitcoinslovenia/lightningloterry:latest
     container_name: lightningLoterryBackend
     depends_on:
         - db
