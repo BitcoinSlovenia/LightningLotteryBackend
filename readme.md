@@ -6,6 +6,7 @@
 Occasionaly use `docker-compose pull` before running `docker-compose up` this makes sure that the latest image is always used
 
 ## database
+- **hostname**: dbc:mysql://localhost:3306/lightninglottery
 - **database**: lightninglottery
 - **username**: lightninglottery
 - **password**: lightninglottery
