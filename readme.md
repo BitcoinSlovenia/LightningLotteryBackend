@@ -63,3 +63,5 @@ https://spring.io/guides/gs/spring-boot-docker/ (scroll to text: Also, to take a
 
 ### maven docker
 TODO Build a Docker Image with Maven https://spring.io/guides/gs/spring-boot-docker/ 
+
+docker build -t bitcoinslovenia/lightningloterry:tagname .
